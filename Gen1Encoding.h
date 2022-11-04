@@ -11,6 +11,7 @@ public:
   static const IGameEncoding* GEN_1_ENGLISH;
 };
 
+// used to convert propietary character encoding to ASCII
 class Gen1English : public Gen1Encoding
 {
 private:

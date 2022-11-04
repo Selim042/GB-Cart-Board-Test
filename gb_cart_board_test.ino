@@ -11,9 +11,12 @@ void setup() {
   pinMode(RESET_PIN, OUTPUT);
   pinMode(START_BUTTON, INPUT_PULLUP);
   pinMode(CANCEL_BUTTON, INPUT_PULLUP);
+  // new DMG object with IO extenders on I2C ports 0x03 and 0x02
   dmgCart = new DMG(0x03, 0x02);
+  // new GBA object with IO extenders on I2C ports 0x03 and 0x02
   //gbaCart = new GBA(0x01, 0x00);
 
+  // prints out test header info
   dmgCart->printROMHeader();
   //gbaCart->printROMHeader();
   

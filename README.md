@@ -1,2 +1,2 @@
-# gb_cart_board_test
+# DMG and GBA Cartridge Board Test
  

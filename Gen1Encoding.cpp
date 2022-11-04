@@ -3,6 +3,7 @@
 
 #include "Gen1Encoding.h"
 
+// converts encoded byte to char
 char Gen1English::FromByte(byte dat) const
 {
   for (int i = 0; i < GEN_1_ENGLISH_NUM_MAPPINGS; i++)
@@ -11,6 +12,7 @@ char Gen1English::FromByte(byte dat) const
   return (char)0x0;
 }
 
+// converts char to encoded byte
 byte Gen1English::ToByte(char dat) const
 {
   for (int i = 0; i < GEN_1_ENGLISH_NUM_MAPPINGS; i++)

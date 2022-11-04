@@ -6,6 +6,7 @@ DMG::DMG(uint8_t adrsAdrs, uint8_t dataAdrs) {
   resetMCPs();
 }
 
+// configure all the necessary pins for startup
 void DMG::resetMCPs() {
   digitalWrite(RESET_PIN, LOW);
   digitalWrite(RESET_PIN, HIGH);
@@ -22,26 +23,37 @@ void DMG::resetMCPs() {
   setDMGDataPinMode(INPUT);
 }
 
+// prints all the info in the ROM header to verify reading
 void DMG::printROMHeader() {
   printNintendoLogo();
+  // checks if the logo was read correctly
   bool validLogo = checkNintendoLogo();
   Serial.print("Nintendo Logo: ");
   Serial.println(validLogo ? "VALID" : "NOT VALID");
+
   Serial.print("Game Title: ");
   char* title = getGameTitle();
   Serial.println(title);
   delete[] title;
-  // manuf code
+
+  // TODO: manuf code
+
+  // checks if the cart supports GBC extra functions or is GBC only
   Serial.print("GBC Flag: ");
   switch (readROMByte(0x143)) {
     case 0x80: Serial.println("Supports GBC functions"); break;
     case 0xC0: Serial.println("GBC only"); break;
     default: Serial.println("Non-GBC"); break;
   }
-  // new licensee code
+
+  // TODO: new licensee code
+
+  // reads flags for super gameboy
   Serial.print("SGB Flag: ");
   if (readROMByte(0x146) == 0x03) Serial.println("Supports SGB functions");
   else Serial.println("No SGB functions");
+
+  // prints cart type and rom/ram sizes
   Serial.print("Cart Type: ");
   printCartType();
   Serial.print("ROM Size: ");
@@ -53,6 +65,8 @@ void DMG::printROMHeader() {
     case 0x02: Serial.println("8 KBytes"); break;
     case 0x03: Serial.println("32 KBytes (4 banks)"); break;
   }
+
+  // region code (sorta) and licensee code
   Serial.print("Desination: ");
   Serial.println(readROMByte(0x14A) ? "Non-Japanese" : "Japanese");
   Serial.print("Old Licensee Code: 0x");
@@ -63,12 +77,15 @@ void DMG::printROMHeader() {
     Serial.print(readROMByte(0x144), HEX);
     Serial.println(readROMByte(0x145), HEX);
   }
+
+  // version and checksum
   Serial.print("ROM Version: ");
   Serial.println(readROMByte(0x14C));
   Serial.print("ROM Checksum: 0x");
   Serial.println(readROMByte(0x14D), HEX);
 }
 
+// displays the Nintendo log as read from the cartridge
 void DMG::printNintendoLogo() {
   for(int y=0; y<8; ++y) {
     int i = ((y/2)%2)+(y/4)*24;
@@ -80,6 +97,7 @@ void DMG::printNintendoLogo() {
   }
 }
 
+// checks if the Nintendo logo is valid compared to the one saved in the program
 bool DMG::checkNintendoLogo() {
   bool valid = true;
   for (uint8_t i = 0; i < 48 && valid; i++) {
@@ -90,6 +108,7 @@ bool DMG::checkNintendoLogo() {
   return valid;
 }
 
+// returns the title of the game
 char* DMG::getGameTitle() {
   char* title = new char[16];
   for (uint8_t i = 0; i < 16; i++) {
@@ -103,6 +122,7 @@ char* DMG::getGameTitle() {
   title[15] = '\0';
   return title;
 }
+
 
 void DMG::printCartType() {
   switch (readROMByte(0x147)) {
@@ -156,7 +176,7 @@ void DMG::printROMSize() {
   }
 }
 
-
+// reads
 void DMG::readBankedROM () {
   String charVal = "";
   String charVal2 = "";
@@ -197,6 +217,7 @@ void DMG::readBankedROM () {
   }
 }
 
+// prints out the entire ROM
 void DMG::readROM() {
   String charVal = "";
   String charVal2 = "";
@@ -246,6 +267,7 @@ void DMG::readROM() {
   }
 }
 
+// reads byte at adrs and switches bank if needed
 uint8_t DMG::readBankedROMByte(uint32_t adrs) {
   uint8_t bank = adrs / 0x4000;
   if (romBank != bank)
@@ -256,6 +278,7 @@ uint8_t DMG::readBankedROMByte(uint32_t adrs) {
   return readROMByte(readAdrs);
 }
 
+// reads byte at adrs without switching bank
 uint8_t DMG::readROMByte(uint16_t adrs) {
   cartAdrs.writeGPIOAB(adrs);
   delayMicroseconds(IO_DELAY);
@@ -354,6 +377,7 @@ void DMG::readSRAM() {
   disableSRAM();
 }
 
+// reads adrs from SRAM with bank switching
 uint8_t DMG::readBankedSRAMByte(uint16_t adrs) {
   uint16_t offsetAdrs = adrs - 0xA000;
   uint8_t bank = adrs / 0x2000;
@@ -363,6 +387,7 @@ uint8_t DMG::readBankedSRAMByte(uint16_t adrs) {
   return readSRAMByte(0xA000 + readAdrs);
 }
 
+// reads adrs from SRAM without bank switching, will turn on/off SRAM if necessary
 uint8_t DMG::readSRAMByte(uint16_t adrs) {
   bool toggledSRAM = false;
   if (!sramEnabled) {
@@ -377,6 +402,7 @@ uint8_t DMG::readSRAMByte(uint16_t adrs) {
   return val;
 }
 
+// sets all the data pins to the appropriate IO mode
 void DMG::setDMGDataPinMode(uint8_t mode) {
   if (DEBUG_OUTPUT) {
     Serial.print("SETTING DATA PINS TO ");
@@ -390,6 +416,7 @@ void DMG::setDMGDataPinMode(uint8_t mode) {
   delayMicroseconds(IO_DELAY);
 }
 
+// switches the active ROM bank to bankNum
 void DMG::switchROMBank(int bankNum) {
   romBank = bankNum;
   if (DEBUG_OUTPUT) {
@@ -414,6 +441,7 @@ void DMG::switchROMBank(int bankNum) {
   delayMicroseconds(IO_DELAY);
 }
 
+// writes value to the data pins
 void DMG::writeData(uint8_t value) {
   for (uint8_t b = 0; b < 8; b++) {
     cartData.digitalWrite(b + 8, (value >> b) & 1);
