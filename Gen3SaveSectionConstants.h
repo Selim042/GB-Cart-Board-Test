@@ -1,4 +1,4 @@
-﻿#ifndef GEN_3_SAVE_SECTION_CONSTANTS_H
+#ifndef GEN_3_SAVE_SECTION_CONSTANTS_H
 #define GEN_3_SAVE_SECTION_CONSTANTS_H
 
 class Gen3SaveSectionConstants

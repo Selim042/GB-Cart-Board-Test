@@ -1,6 +1,3 @@
-#ifndef GEN_3_SAVE_SECTION_CONSTANTS_CPP
-#define GEN_3_SAVE_SECTION_CONSTANTS_CPP
-
 #include "Gen3SaveSectionConstants.h"
 
 const unsigned int Gen3SaveSectionConstants::SECTION_LENGTHS[SECTION_LENGTHS_LENGTH] = {
@@ -19,4 +16,3 @@ const unsigned int Gen3SaveSectionConstants::SECTION_LENGTHS[SECTION_LENGTHS_LEN
 	3968, // PC Buffer H  (12)
 	2000, // PC Buffer I  (13)
 };
-#endif

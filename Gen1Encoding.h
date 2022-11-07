@@ -1,4 +1,4 @@
-﻿#ifndef GEN_1_ENCODING_H
+#ifndef GEN_1_ENCODING_H
 #define GEN_1_ENCODING_H
 
 #include "IGameEncoding.h"

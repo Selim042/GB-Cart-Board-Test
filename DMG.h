@@ -1,3 +1,6 @@
+#ifndef DMG_H
+#define DMG_H
+
 #include <Adafruit_MCP23017.h>
 #include <Arduino.h>
 
@@ -64,3 +67,5 @@ class DMG {
     void disableSRAM();
 
 };
+
+#endif

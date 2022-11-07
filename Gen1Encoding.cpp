@@ -1,6 +1,3 @@
-﻿#ifndef GEN_1_ENCODING_CPP
-#define GEN_1_ENCODING_CPP
-
 #include "Gen1Encoding.h"
 
 // converts encoded byte to char
@@ -47,4 +44,3 @@ const Pair<byte, wchar_t> Gen1English::GEN_1_ENGLISH_MAPPING[GEN_1_ENGLISH_NUM_M
 };
 
 const IGameEncoding* Gen1Encoding::GEN_1_ENGLISH = new Gen1English();
-#endif

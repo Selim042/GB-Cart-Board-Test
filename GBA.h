@@ -1,3 +1,6 @@
+#ifndef GBA_H
+#define GBA_H
+
 #include <Adafruit_MCP23017.h>
 #include <Arduino.h>
 
@@ -41,3 +44,5 @@ class GBA {
     uint32_t GetSectionOffset(byte sectionId, unsigned int saveOffset);
     void writeData(uint8_t value);
 };
+
+#endif
